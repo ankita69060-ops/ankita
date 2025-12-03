@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Catch The Ball Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #222;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+        }
+
+        #player {
+            width: 120px;
+            height: 20px;
+            background: #4CAF50;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+        }
+
+        #ball {
+            width: 30px;
+            height: 30px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 0px;
+            left: 50%;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="player"></div>
+<div id="ball"></div>
+<div id="score">Score: 0</div>
+
+<script>
+    let player = document.getElementById("player");
+    let ball = document.getElementById("ball");
+    let scoreDisplay = document.getElementById("score");
+
+    let score = 0;
+    let ballSpeed = 3;
+
+    // Move player with mouse
+    document.addEventListener("mousemove", function(e) {
+        player.style.left = (e.clientX - 60) + "px";
+    });
+
+    function dropBall() {
+        let x = Math.random() * (window.innerWidth - 30);
+        ball.style.left = x + "px";
+        ball.style.top = "0px";
+
+        let drop = setInterval(() => {
+            let ballTop = parseInt(ball.style.top);
+            ball.style.top = ballTop + ballSpeed + "px";
+
+            let ballPos = ball.getBoundingClientRect();
+            let playerPos = player.getBoundingClientRect();
+
+            // Catch ball
+            if (
+                ballPos.bottom >= playerPos.top &&
+                ballPos.left >= playerPos.left &&
+                ballPos.right <= playerPos.right
+            ) {
+                score++;
+                scoreDisplay.innerHTML = "Score: " + score;
+                clearInterval(drop);
+                dropBall();
+            }
+
+            // Missed ball
+            if (ballPos.top > window.innerHeight) {
+                alert("Game Over! Final Score: " + score);
+                location.reload();
+            }
+        }, 10);
+    }
+
+    dropBall();
+</script>
+
+</body>
+</html>
+
